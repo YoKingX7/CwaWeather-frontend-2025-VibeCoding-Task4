@@ -6,7 +6,7 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <title>森森天氣</title>
+        <title>嘉義縣鳳梨天氣站</title>
         <link rel="icon" type="image/png" href="./icon-v2.png" />
         <link rel="apple-touch-icon" href="./icon-v2.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="./icon-v2.png" />
@@ -19,37 +19,30 @@
 
         <style>
             :root {
-                --ac-green: #7de1a9;
-                --ac-bg-pattern: #8fd8af;
-                --ac-cream: #fffef2;
-                --ac-yellow: #f9f195;
-                --ac-brown: #796452;
-                --ac-blue: #4fb5d9;
-                --ac-dark: #58504a;
-                --ac-card-border: #e6e0c8;
-            }
-
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                -webkit-tap-highlight-color: transparent;
+                /* Vibe Coding：鳳梨調色盤 */
+                --ac-green: #3fa86a; /* 鳳梨葉綠 */
+                --ac-bg-pattern: #fff6cf; /* 淡鳳梨肉 */
+                --ac-cream: #fffaf0;
+                --ac-yellow: #ffd65a; /* 鳳梨黃 */
+                --ac-brown: #8b5b2b; /* 外皮格紋的咖啡色 */
+                --ac-blue: #4fb5d9; /* 天空藍，保留一點清爽感 */
+                --ac-dark: #4a3425;
+                --ac-card-border: #ffe59a;
             }
 
             body {
                 font-family: "Zen Maru Gothic", sans-serif;
-                background-color: var(--ac-green);
-                /* 更細緻的斜紋背景 */
+                background-color: var(--ac-bg-pattern);
+                /* 鳳梨格紋感的斜紋背景 */
                 background-image: repeating-linear-gradient(
                     45deg,
-                    transparent,
-                    transparent 20px,
-                    rgba(255, 255, 255, 0.2) 20px,
-                    rgba(255, 255, 255, 0.2) 40px
+                    rgba(255, 214, 90, 0.35),
+                    rgba(255, 214, 90, 0.35) 14px,
+                    rgba(255, 255, 255, 0) 14px,
+                    rgba(255, 255, 255, 0) 28px
                 );
                 min-height: 100vh;
                 color: var(--ac-dark);
-                /* 防止 iOS 左右滑動 */
                 overflow-x: hidden;
                 padding-bottom: 20px;
             }
@@ -68,7 +61,7 @@
             }
 
             .location-pill {
-                background: var(--ac-yellow);
+                background: linear-gradient(135deg, var(--ac-yellow), #ffb347);
                 color: var(--ac-brown);
                 padding: 5px 15px;
                 border-radius: 20px;
@@ -256,7 +249,7 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: var(--ac-green);
+                background: linear-gradient(180deg, #ffefc2, #ffd65a);
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -268,20 +261,20 @@
 
     <body>
         <div id="loading" class="loading-screen">
-            <div style="font-size: 4rem; animation: bounce 2s infinite">☁️</div>
+            <div style="font-size: 4rem; animation: bounce 2s infinite">🍍</div>
             <p style="color: white; font-weight: bold; margin-top: 20px">
-                正在觀測雲的流動...
+                鳳梨農正在抬頭看天氣...
             </p>
         </div>
         <div class="status-bar">
-            <div class="location-pill">📍 嘉義</div>
+            <div class="location-pill">🍍 嘉義鳳梨天氣站</div>
             <div id="updateTime" class="update-pill">更新中...</div>
         </div>
 
         <div class="container" id="mainContent" style="display: none">
             <div id="heroCard"></div>
 
-            <h3 class="section-title">稍後預報</h3>
+            <h3 class="section-title">鳳梨小時預報</h3>
             <div class="scroll-container" id="futureForecasts"></div>
         </div>
 
@@ -300,21 +293,34 @@
             }
 
             function getAdvice(rainProb, maxTemp) {
+                const rain = parseInt(rainProb);
+                const temp = parseInt(maxTemp);
+
+                // ☔ 帶傘建議
                 let rainIcon = "🌂";
-                let rainText = "不用帶傘";
-                if (parseInt(rainProb) > 30) {
+                let rainText = "放心出門啦"; // 原本「不用帶傘」→ 鳳梨口吻
+
+                if (rain > 60) {
+                    rainIcon = "⛈️";
+                    rainText = "鳳梨雨要來，雨具帶好！";
+                } else if (rain > 30) {
                     rainIcon = "☂️";
-                    rainText = "記得帶傘！";
+                    rainText = "可能會下雨，帶把傘比較安心";
                 }
 
+                // 👕 穿搭建議
                 let clothIcon = "👕";
-                let clothText = "舒適穿搭";
-                if (parseInt(maxTemp) >= 28) {
+                let clothText = "今天穿什麼都 OK";
+
+                if (temp >= 30) {
+                    clothIcon = "🍍";
+                    clothText = "鳳梨冰天氣，短袖就很剛好";
+                } else if (temp >= 25) {
                     clothIcon = "🎽";
-                    clothText = "短袖出發";
-                } else if (parseInt(maxTemp) <= 20) {
+                    clothText = "偏熱，清爽短袖出門";
+                } else if (temp <= 20) {
                     clothIcon = "🧥";
-                    clothText = "加件外套";
+                    clothText = "有點涼，帶件外套";
                 }
 
                 return { rainIcon, rainText, clothIcon, clothText };
@@ -464,7 +470,7 @@
                     }
                 } catch (e) {
                     console.error(e);
-                    alert("天氣資料讀取失敗，狸克把網路線咬斷了！");
+                    alert("天氣資料讀取失敗，鳳梨園的網路暫時斷線了 🍍");
                 }
             }
 
